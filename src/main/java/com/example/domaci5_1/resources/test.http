@@ -1,0 +1,28 @@
+GET http://localhost:8080/domaci5_1_war_exploded/api/comments/0
+Accept: application/json
+
+###
+
+POST http://localhost:8080/domaci5_1_war_exploded/api/comments
+Content-Type: application/json
+
+{
+  "author": "Danilo",
+  "text": "Tekst komentara",
+  "postId": 0
+}
+###
+POST http://localhost:8080/domaci5_1_war_exploded/api/posts
+Content-Type: application/json
+
+{
+  "author": "Danilo",
+  "title": "naslov",
+  "text": "sadrzaj"
+}
+
+###
+
+GET http://localhost:8080/domaci5_1_war_exploded/api/posts
+Accept: application/json
+###

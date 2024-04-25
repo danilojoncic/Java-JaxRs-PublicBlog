@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Post</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+        * {
+            text-align: center;
+        }
+
+        #blog_posts_page {
+            width: 80%;
+            margin: auto;
+        }
+
+        #add_new_post_form {
+            width: 80%;
+            margin: auto;
+        }
+
+        #post_preview_page {
+            width: 80%;
+            margin: auto;
+        }
+
+        .post_element {
+            outline: 1px solid black;
+        }
+
+        .card {
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+<div id="blog_posts_page">
+    <h1>All Posts</h1>
+
+    <div class="row" id="posts_list"></div>
+    <button id="add_new_post_button" type="button" class="btn btn-primary btn-lg btn-block mt-3">New Post</button>
+</div>
+<div id="add_new_post_form" class="container">
+    <h2>Post Form</h2>
+    <div class="form-group">
+        <label for="post_authorInput">Author:</label>
+        <input id="post_authorInput" name="post_authorInput" type="text" class="form-control"
+               placeholder="Enter author name">
+    </div>
+    <div class="form-group">
+        <label for="post_titleInput">Title:</label>
+        <input id="post_titleInput" name="post_titleInput" type="text" class="form-control"
+               placeholder="Enter post title">
+    </div>
+    <div class="form-group">
+        <label for="post_contentInput">Content:</label>
+        <textarea id="post_contentInput" name="post_contentInput" class="form-control" rows="5"
+                  placeholder="Enter post content"></textarea>
+    </div>
+    <button id="add_post_button" class="btn btn-primary">Submit Post</button>
+</div>
+
+<div id="post_preview_page" class="container mt-3">
+    <h1>Post Preview</h1>
+    <hr>
+    <br>
+    <div class="card">
+        <div class="card-header">
+            <h5 id="post_preview_title" class="card-title">Post Title</h5>
+            <h6 id='post_preview_author' class="card-subtitle text-muted">By Post Author</h6>
+        </div>
+        <div class="card-body">
+            <p id="post_preview_content" class="card-text">Post Text</p>
+        </div>
+    </div>
+    <hr>
+    <h2>Comments</h2>
+    <div id="comments_list"></div>
+    <div id="add_new_comment_form" class="container">
+        <h2>Add comment on post.</h2>
+        <div class="form-group">
+            <label for="authorInput">Author:</label>
+            <input id='add_comment_authorInput' type="text" class="form-control" id="authorInput"
+                   placeholder="Enter author name">
+        </div>
+        <div class="form-group">
+            <label for="contentInput">Content:</label>
+            <textarea id='add_comment_contentInput' class="form-control" id="contentInput" rows="5"
+                      placeholder="Enter post content"></textarea>
+        </div>
+        <button id="add_comment_button" type="submit" class="btn btn-primary">Submit Post</button>
+    </div>
+</div>
+<script>
+    display_all_posts();
+
+    function display_all_posts() {
+        const blog_posts_page = document.getElementById('blog_posts_page');
+        blog_posts_page.style.display = 'block';
+        const add_new_post_form = document.getElementById('add_new_post_form');
+        add_new_post_form.style.display = 'none';
+        const post_preview_page = document.getElementById('post_preview_page');
+        post_preview_page.style.display = 'none';
+        fetch('api/posts', {method: 'GET'})
+            .then(response => response.json())
+            .then(posts => {
+                const posts_list = document.getElementById('posts_list');
+                posts_list.innerHTML = '';
+                posts.forEach(curr_post => {
+                    const post_element = make_post_element(curr_post);
+                    post_element.addEventListener('click', () => display_post(curr_post));
+                    posts_list.appendChild(post_element);
+                });
+                const new_post_button = document.getElementById('add_new_post_button');
+                new_post_button.addEventListener('click', () => display_new_post_form());
+            });
+    }
+
+    function display_new_post_form() {
+        const blog_posts_page = document.getElementById('blog_posts_page');
+        blog_posts_page.style.display = 'none';
+        const add_new_post_form = document.getElementById('add_new_post_form');
+        add_new_post_form.style.display = 'block';
+        const post_preview_page = document.getElementById('post_preview_page');
+        post_preview_page.style.display = 'none';
+        const post_authorInput = document.getElementById('post_authorInput');
+        const post_titleInput = document.getElementById('post_titleInput');
+        const post_contentInput = document.getElementById('post_contentInput');
+        const add_post_button = document.getElementById('add_post_button');
+        add_post_button.onclick = () => {
+            fetch('api/posts', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    author: post_authorInput.value,
+                    title: post_titleInput.value,
+                    text: post_contentInput.value
+                })
+            })
+                .then(response => response.json())
+                .then(() => {
+                    display_all_posts();
+                });
+        };
+    }
+
+    function display_post(post) {
+        const blog_posts_page = document.getElementById('blog_posts_page');
+        blog_posts_page.style.display = 'none';
+        const post_preview_page = document.getElementById('post_preview_page');
+        post_preview_page.style.display = 'block';
+        const post_title = document.getElementById('post_preview_title');
+        post_title.innerText = post.title;
+        const post_author = document.getElementById('post_preview_author');
+        post_author.innerText = post.author;
+        const post_content = document.getElementById('post_preview_content');
+        post_content.innerText = post.text;
+        const add_comment_button = document.getElementById("add_comment_button");
+        add_comment_button.onclick = () => {
+            const comment_author = document.getElementById('add_comment_authorInput');
+            const comment_content = document.getElementById('add_comment_contentInput');
+            fetch('api/comments', {
+                method: 'POST', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    author: comment_author.value,
+                    text: comment_content.value,
+                    postId: post.id
+                })
+            })
+                .then(response => response.json())
+                .then(comment => {
+                    make_comment_element(comment);
+                });
+        };
+        const comments_list = document.getElementById("comments_list");
+        comments_list.innerHTML = '';
+        fetch('api/comments/'+post.id, {method: 'GET'})
+            .then(response => response.json())
+            .then(comments => {
+                comments.forEach(curr_comment => {
+                    make_comment_element(curr_comment);
+                });
+            });
+    }
+
+    function make_post_element(post) {
+        const card = document.createElement('div');
+        card.classList.add('card', 'col-md-4', 'mt-3');
+        card.style.width = '18rem';
+        const cardBody = document.createElement('div');
+        cardBody.classList.add('card-body');
+        const cardTitle = document.createElement('h5');
+        cardTitle.classList.add('card-title');
+        cardTitle.innerText = post.title;
+        const cardSubtitle = document.createElement('h6');
+        cardSubtitle.classList.add('card-subtitle', 'mb-2', 'text-muted');
+        cardSubtitle.innerText = post.author;
+        const cardText = document.createElement('p');
+        cardText.classList.add('card-text');
+        cardText.innerText = post.date;
+        cardBody.appendChild(cardTitle);
+        cardBody.appendChild(cardSubtitle);
+        cardBody.appendChild(cardText);
+        card.appendChild(cardBody);
+        return card;
+    }
+
+    function make_comment_element(comment) {
+        const comment_list = document.getElementById("comments_list");
+        const commentDiv = document.createElement('div');
+        commentDiv.classList.add('card', 'mt-3');
+        const cardBody = document.createElement('div');
+        cardBody.classList.add('card-body');
+        const cardTitle = document.createElement('h5');
+        cardTitle.classList.add('card-title');
+        cardTitle.innerText = comment.author;
+        const cardText = document.createElement('p');
+        cardText.classList.add('card-text');
+        cardText.innerText = comment.text;
+        cardBody.appendChild(cardTitle);
+        cardBody.appendChild(cardText);
+        commentDiv.appendChild(cardBody);
+        comment_list.appendChild(commentDiv);
+    }
+</script>
+</body>
+</html>
