@@ -16,6 +16,7 @@ public class PostService {
 
     //
     public Post addPost(Post post) {
+        System.out.println("POST CONTENTS: " + post.getTitle() + " "  + post.getAuthor());
         return this.postInterfaceRepo.addPost(post);
     }
     public List<Post> allPosts() {

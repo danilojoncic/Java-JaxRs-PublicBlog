@@ -3,6 +3,7 @@ package com.example.domaci5_1.repository;
 import com.example.domaci5_1.entity.Post;
 import com.example.domaci5_1.repository.abstraction.PostInterfaceRepo;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,7 +27,8 @@ public class PostRepository implements PostInterfaceRepo {
         int postId = sveObjave.size();
         post.setId(postId);
         Date date = new Date();
-        post.setDate(date.toString());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm MM.dd.yyyy");
+        post.setDate(simpleDateFormat.format(date));
         sveObjave.add(Math.toIntExact(postId), post);
         return post;
     }

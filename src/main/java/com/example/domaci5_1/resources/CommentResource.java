@@ -23,6 +23,7 @@ public class CommentResource {
     }
 
     @POST
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Comment create(@Valid Comment comment) {
         System.out.println("POST CALLED: Creating a new comment for post id  " + comment.getPostId());

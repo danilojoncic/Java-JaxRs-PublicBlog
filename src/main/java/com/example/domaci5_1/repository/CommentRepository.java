@@ -3,6 +3,7 @@ package com.example.domaci5_1.repository;
 import com.example.domaci5_1.entity.Comment;
 import com.example.domaci5_1.repository.abstraction.CommentInterfaceRepo;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -16,7 +17,8 @@ public class CommentRepository implements CommentInterfaceRepo {
         int id = sviKomentari.size();
         comment.setId(id);
         Date date = new Date();
-        comment.setDate(date.toString());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm MM.dd.yyyy");
+        comment.setDate(simpleDateFormat.format(date));
         sviKomentari.add(Math.toIntExact(id), comment);
         return comment;
     }

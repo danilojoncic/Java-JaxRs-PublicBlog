@@ -31,6 +31,7 @@ public class PostResource {
     }
 
     @POST
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Post create(@Valid Post post) {
         System.out.println("POST CALLED: Creating a new post: " + post.getTitle());

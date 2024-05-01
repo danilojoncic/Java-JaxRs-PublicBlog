@@ -12,15 +12,27 @@ public class DataSeeder implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         PostRepository postRepository = new PostRepository();
-        for(int i = 0; i < 5;i++){
-            Post p1 = new Post();
-            Date date = new Date();
-            p1.setDate(date.toString());
-            p1.setAuthor("Author" + i);
-            p1.setTitle("Title " + i);
-            p1.setText("Lorem Ipsum bajo");
-            postRepository.addPost(p1);
-        }
+
+
+        Post p1 = new Post();
+        p1.setTitle("Gigatron VS Limundo");
+        p1.setAuthor("Posteni kupac");
+        p1.setText("Da li je bolje trositi vas tesko zaradjeni novac u Gigatronu ili ipak okusati srecu na lokalnoj " +
+                "riznici Limunda, to je kraj teksta!");
+        postRepository.addPost(p1);
+
+        Post p2 = new Post();
+        p2.setTitle("Bec ili Vienna");
+        p2.setAuthor("Turisticki vodic Dragoslav");
+        p2.setText("Dodje na isto, to je kraj teksta!");
+        postRepository.addPost(p2);
+
+        Post p3 = new Post();
+        p3.setTitle("Kako spremiti polumaraton za 3 nedelje");
+        p3.setAuthor("Strucnjak za trcanje");
+        p3.setText("Spremices se tako sto ces prvu nedelju jadikovati kako je tesko trcanje, a onda ces naredne 2 nedelje trcati");
+        postRepository.addPost(p3);
+
         sce.getServletContext().setAttribute("postRepository",postRepository);
     }
 }
